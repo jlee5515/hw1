@@ -41,8 +41,12 @@ int main(int argc, char* argv[])
 	two.push_front("9");
 	two.push_front("10");
 	two.push_front("11");
-	
 	std::cout << two.get(0) << "   " << two.get(1) << std::endl; //should be 11 10
+	for(int i = 0; i < 11; i++){ //testing pop front
+		std::cout << "Size is: " << two.size() << std::endl;
+		two.pop_front();
+	}
+	std::cout << "Size is: " << two.size() << std::endl;
 	two.clear();
 
 

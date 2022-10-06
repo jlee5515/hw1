@@ -92,75 +92,71 @@ void ULListStr::push_back(const std::string& val){
 
 void ULListStr::push_front(const std::string& val){
 	if(empty()){ //if no list exists, create a head and tail and push val to the last index in head
-		head_ = new Item;
+		Item* temp = new Item;
+		temp->val[0] = val;
+		temp->first = 0;
+		temp->last = 1;
+		head_ = temp;
 		tail_ = head_;
-
-		head_->first = 0;
-		head_->last = 1;
-		head_->val[head_->first] = val;
 	}
 	else if(head_->first != 0){ //if there is room to push to the front of the current node, do so
+		head_->val[head_->first-1] = val;
 		head_->first--;
-		head_->val[head_->first] = val;
 	}
 	else{	//no room in current node. create a node and push val to the last index in head and reassign head
-		Item *temp = head_;
-		head_ = new Item;
-		temp->prev = head_;
-		head_->next = temp;
-		
-		head_->first = ARRSIZE - 1;
-		head_->last = ARRSIZE;
-		head_->val[head_->first] = val;
+		Item *temp = new Item;
+		temp->prev = NULL;
+		head_->prev = temp;
+		temp->next = head_;
+		temp->val[ARRSIZE-1] = val;
+		temp->first = ARRSIZE-1;
+		temp->last = ARRSIZE;
+		head_ = temp;
 	}
 
 	size_++;
 }
 
 void ULListStr::pop_back(){
-	if(empty()){ //node is empty/does not exist. return
+	if (empty()){//if list is empty
 		return;
-	}
-	if(size_ == 1){ //if there is only one node (head = tail), delete both
+  }
+  else if (size_ == 1){
 		delete tail_;
-		head_ = NULL;
 		tail_ = NULL;
+		head_ = NULL;
+	}
+	else if(tail_->last == 1 && tail_ != head_){
+		Item* temp = tail_;
+		temp->prev->next = NULL;
+		tail_ = tail_->prev;
+		delete temp;
 	}
 	else{
-		if(tail_->last != 1){	//if pop_back() will not leave the array empty, move the 'last' pointer back one
-			tail_->last--;
-		}
-		else{	//pop_back() will leave the node empty. reassign tail prev and head next, and delete the empty node
-			Item *temp;
-			temp = tail_->prev;
-			delete tail_;
-			tail_ = temp;
-			tail_->next = NULL;
-		}
+		(tail_->val[tail_->last-1]).clear();
+		--(tail_->last);
 	}
 	size_--;
 }
 
 void ULListStr::pop_front(){
-	if(empty()){	//node is empty/does not exist. return
+	if(empty()){//if list is empty
 		return;
-	}
-	if(size_ == 1){ //if there is only one node (head = tail), delete both
+  }
+  else if(size_ == 1){ 
 		delete head_;
-		head_ = NULL;
 		tail_ = NULL;
+		head_ = NULL;
+	}
+	else if(head_->first == ARRSIZE && head_ != tail_){
+		Item* temp = head_;
+		head_->next->prev = NULL;
+		head_ = head_->next;
+		delete temp;
 	}
 	else{
-		if(head_->first != ARRSIZE-1){ //if pop_front() will not leave the array empty, move the 'first' pointer forward one
-			head_->first++;
-		}
-		else{ //pop_front() will leave the node empty. reassign head prev and head next, and delete the empty node
-			Item *temp;
-			temp = head_->next;
-			delete head_;
-			head_ = temp;
-			head_->prev = NULL;
-		}
+		(head_->val[head_->first]).clear();
+		++(head_->first);
 	}
 	size_--;
 }
